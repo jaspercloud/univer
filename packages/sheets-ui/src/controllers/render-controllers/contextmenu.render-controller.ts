@@ -81,9 +81,9 @@ export class SheetContextMenuRenderController extends Disposable implements IRen
                 if (!isPointerInRange()) {
                     triggerMenu(ContextMenuPosition.MAIN_AREA);
                 } else if (rangeType === RANGE_TYPE.COLUMN) {
-                    triggerMenu(ContextMenuPosition.COL_HEADER);
+                    // triggerMenu(ContextMenuPosition.COL_HEADER);
                 } else if (rangeType === RANGE_TYPE.ROW) {
-                    triggerMenu(ContextMenuPosition.ROW_HEADER);
+                    triggerMenu(ContextMenuPosition.MAIN_AREA);
                 } else {
                     triggerMenu(ContextMenuPosition.MAIN_AREA);
                 }
@@ -105,7 +105,7 @@ export class SheetContextMenuRenderController extends Disposable implements IRen
         const colHeaderPointerDownObserver = spreadsheetColumnHeader.onPointerDown$;
         const colHeaderObserver = colHeaderPointerDownObserver.subscribeEvent((event) => {
             if (event.button === 2) {
-                this._contextMenuService.triggerContextMenu(event, ContextMenuPosition.COL_HEADER);
+                // this._contextMenuService.triggerContextMenu(event, ContextMenuPosition.COL_HEADER);
             }
         });
         this.disposeWithMe(colHeaderObserver);

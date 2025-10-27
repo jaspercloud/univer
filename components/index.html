@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Univer Components</title>
+        <style>
+            html,
+            body,
+            #app {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #btn {
+                width: 120px;
+                height: 30px;
+            }
+
+            #excel {
+                width: 100%;
+                height: calc(100% - 30px);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="app">
+            <button id="btn">load</button>
+            <div id="excel"></div>
+        </div>
+        <script type="module" src="/src/main.ts"></script>
+    </body>
+</html>

@@ -26,6 +26,8 @@
         "prepare": "husky",
         "pre-commit": "lint-staged",
         "dev": "pnpm --filter univer-examples dev:demo -- --host 0.0.0.0",
+        "comp:dev": "pnpm --filter univer-components dev",
+        "comp:build": "pnpm --filter univer-components build",
         "dev:libs": "pnpm --filter univer-examples dev:demo-libs",
         "dev:e2e": "pnpm --filter univer-examples dev:e2e",
         "use:react16": "tsx ./scripts/react-version-manager.ts --react=16",
@@ -59,6 +61,7 @@
         "@univerjs-infra/shared": "workspace:*",
         "@univerjs/design": "workspace:*",
         "@vitejs/plugin-react": "^5.0.4",
+        "@vitejs/plugin-vue": "^6.0.1",
         "eslint": "9.37.0",
         "eslint-plugin-format": "^1.0.2",
         "eslint-plugin-react": "^7.37.5",
@@ -76,6 +79,8 @@
         "tsx": "^4.20.6",
         "turbo": "^2.5.8",
         "typescript": "^5.9.3",
+        "vite": "^7.1.11",
+        "vite-plugin-vue-devtools": "^8.0.3",
         "vitest": "^3.2.4"
     },
     "pnpm": {

@@ -54,7 +54,6 @@ import { SheetContextMenuRenderController } from './controllers/render-controlle
 import { EditorBridgeRenderController } from './controllers/render-controllers/editor-bridge.render-controller';
 import { FormatPainterRenderController } from './controllers/render-controllers/format-painter.render-controller';
 import { HeaderFreezeRenderController } from './controllers/render-controllers/freeze.render-controller';
-import { HeaderMenuRenderController } from './controllers/render-controllers/header-menu.render-controller';
 import { HeaderMoveRenderController } from './controllers/render-controllers/header-move.render-controller';
 import { HeaderResizeRenderController } from './controllers/render-controllers/header-resize.render-controller';
 import { HeaderUnhideRenderController } from './controllers/render-controllers/header-unhide.render-controller';
@@ -284,7 +283,7 @@ export class UniverSheetsUIPlugin extends Plugin {
         const config = this._configService.getConfig<IUniverUIConfig>(UI_PLUGIN_CONFIG_KEY);
         const showContextMenu = config?.contextMenu ?? true;
         if (showContextMenu) {
-            modules.push([HeaderMenuRenderController]);
+            // modules.push([HeaderMenuRenderController]);
         }
 
         modules.forEach((m) => {

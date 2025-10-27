@@ -88,11 +88,13 @@ export const SheetPasteShortKeyCommand: ICommand = {
     id: SheetPasteShortKeyCommandName,
     type: CommandType.COMMAND,
     handler: async (accessor: IAccessor, params: ISheetPasteByShortKeyParams) => {
-        const clipboardService = accessor.get(ISheetClipboardService);
-        const { htmlContent, textContent, files } = params;
-        clipboardService.legacyPaste(htmlContent, textContent, files);
+        // const clipboardService = accessor.get(ISheetClipboardService);
+        // const { htmlContent, textContent, files } = params;
+        // clipboardService.legacyPaste(htmlContent, textContent, files);
 
-        return true;
+        // return true;
+        const commandService = accessor.get(ICommandService);
+        return commandService.executeCommand(SheetPasteCommand.id, { value: PREDEFINED_HOOK_NAME.SPECIAL_PASTE_VALUE });
     },
 };
 

@@ -25,7 +25,7 @@ import {
 } from '@univerjs/core';
 import { CURSOR_TYPE, Rect } from '@univerjs/engine-render';
 import { SetSelectionsOperation, SheetsSelectionsService } from '@univerjs/sheets';
-import { ContextMenuPosition, IContextMenuService } from '@univerjs/ui';
+import { IContextMenuService } from '@univerjs/ui';
 import { Subscription } from 'rxjs';
 
 import { SHEET_COMPONENT_HEADER_LAYER_INDEX, SHEET_VIEW_KEY } from '../../common/keys';
@@ -259,7 +259,7 @@ export class HeaderMenuRenderController extends Disposable implements IRenderMod
 
             evt.stopPropagation();
             evt.preventDefault();
-            this._contextMenuService.triggerContextMenu(evt, ContextMenuPosition.COL_HEADER);
+            // this._contextMenuService.triggerContextMenu(evt, ContextMenuPosition.COL_HEADER);
         });
     }
 

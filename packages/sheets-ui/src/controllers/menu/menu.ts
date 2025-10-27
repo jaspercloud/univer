@@ -982,7 +982,8 @@ export function CutMenuItemFactory(accessor: IAccessor): IMenuButtonItem {
         id: SheetCutCommand.name,
         commandId: CutCommand.id,
         type: MenuItemType.BUTTON,
-        title: 'contextMenu.cut',
+        title: 'rightClick.cut',
+        icon: 'CutIcon',
         disabled$: getCurrentRangeDisable$(accessor, {
             workbookTypes: [WorkbookEditablePermission],
             rangeTypes: [RangeProtectionPermissionEditPoint],
@@ -1026,7 +1027,8 @@ export function PasteValueMenuItemFactory(accessor: IAccessor): IMenuButtonItem<
     return {
         id: SheetPasteValueCommand.id,
         type: MenuItemType.BUTTON,
-        title: 'rightClick.pasteValue',
+        title: 'rightClick.paste',
+        icon: 'PasteSpecialDoubleIcon',
         disabled$: menuClipboardDisabledObservable(accessor).pipe(
             combineLatestWith(getCurrentRangeDisable$(accessor, {
                 rangeTypes: [RangeProtectionPermissionEditPoint],

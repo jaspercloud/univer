@@ -25,12 +25,10 @@ import {
     ClearSelectionContentCommand,
     ClearSelectionFormatCommand,
     CopySheetCommand,
-    InsertColBeforeCommand,
     InsertMultiColsLeftCommand,
     InsertMultiColsRightCommand,
     InsertMultiRowsAboveCommand,
     InsertMultiRowsAfterCommand,
-    InsertRowBeforeCommand,
     RemoveWorksheetMergeCommand,
     ResetBackgroundColorCommand,
     ResetTextColorCommand,
@@ -38,30 +36,24 @@ import {
     SetBorderBasicCommand,
     SetColWidthCommand,
     SetHorizontalTextAlignCommand,
-    SetRowHeightCommand,
     SetSelectedColsVisibleCommand,
-    SetSelectedRowsVisibleCommand,
     SetTabColorCommand,
     SetTextRotationCommand,
     SetTextWrapCommand,
     SetVerticalTextAlignCommand,
     SetWorksheetHideCommand,
-    SetWorksheetRowIsAutoHeightCommand,
     ToggleGridlinesCommand,
 } from '@univerjs/sheets';
 import { ContextMenuGroup, ContextMenuPosition, RibbonPosition, RibbonStartGroup } from '@univerjs/ui';
 import {
     SheetCopyCommand,
-    // SheetCutCommand,
     SheetPasteBesidesBorderCommand,
     SheetPasteColWidthCommand,
     SheetPasteCommand,
     SheetPasteFormatCommand,
     SheetPasteValueCommand,
 } from '../commands/commands/clipboard.command';
-import { DeleteRangeMoveLeftConfirmCommand } from '../commands/commands/delete-range-move-left-confirm.command';
-import { DeleteRangeMoveUpConfirmCommand } from '../commands/commands/delete-range-move-up-confirm.command';
-import { HideColConfirmCommand, HideRowConfirmCommand } from '../commands/commands/hide-row-col-confirm.command';
+import { HideColConfirmCommand } from '../commands/commands/hide-row-col-confirm.command';
 import {
     SetRangeBoldCommand,
     SetRangeFontFamilyCommand,
@@ -71,8 +63,6 @@ import {
     SetRangeTextColorCommand,
     SetRangeUnderlineCommand,
 } from '../commands/commands/inline-format.command';
-import { InsertRangeMoveDownConfirmCommand } from '../commands/commands/insert-range-move-down-confirm.command';
-import { InsertRangeMoveRightConfirmCommand } from '../commands/commands/insert-range-move-right-confirm.command';
 import {
     AddRangeProtectionFromContextMenuCommand,
     AddRangeProtectionFromSheetBarCommand,
@@ -85,7 +75,7 @@ import {
 import { RemoveColConfirmCommand, RemoveRowConfirmCommand } from '../commands/commands/remove-row-col-confirm.command';
 import { RemoveSheetConfirmCommand } from '../commands/commands/remove-sheet-confirm.command';
 import { SetOnceFormatPainterCommand } from '../commands/commands/set-format-painter.command';
-import { SetColumnFrozenCommand, SetRowFrozenCommand, SetSelectionFrozenCommand } from '../commands/commands/set-frozen.command';
+import { SetSelectionFrozenCommand } from '../commands/commands/set-frozen.command';
 import { SetWorksheetColAutoWidthCommand } from '../commands/commands/set-worksheet-auto-col-width.command';
 import { ShowMenuListCommand } from '../commands/commands/unhide.command';
 import {
@@ -95,19 +85,13 @@ import {
 import { RenameSheetOperation } from '../commands/operations/rename-sheet.operation';
 import { CellBorderSelectorMenuItemFactory } from './menu/border.menu';
 import { CLEAR_SELECTION_MENU_ID, ClearSelectionAllMenuItemFactory, ClearSelectionContentMenuItemFactory, ClearSelectionFormatMenuItemFactory, ClearSelectionMenuItemFactory } from './menu/clear.menu';
-import { DELETE_RANGE_MENU_ID, DeleteRangeMenuItemFactory, DeleteRangeMoveLeftMenuItemFactory, DeleteRangeMoveUpMenuItemFactory, RemoveColMenuItemFactory, RemoveRowMenuItemFactory } from './menu/delete.menu';
+import { RemoveColMenuItemFactory, RemoveRowMenuItemFactory } from './menu/delete.menu';
 import { ToggleGridlinesMenuFactory } from './menu/gridlines.menu';
 import {
-    CELL_INSERT_MENU_ID,
-    CellInsertMenuItemFactory,
-    InsertColLeftCellMenuItemFactory,
     InsertMultiColsLeftHeaderMenuItemFactory,
     InsertMultiColsRightHeaderMenuItemFactory,
     InsertMultiRowsAboveHeaderMenuItemFactory,
     InsertMultiRowsAfterHeaderMenuItemFactory,
-    InsertRangeMoveDownMenuItemFactory,
-    InsertRangeMoveRightMenuItemFactory,
-    InsertRowBeforeCellMenuItemFactory,
 } from './menu/insert.menu';
 import {
     BackgroundColorSelectorMenuItemFactory,
@@ -115,16 +99,11 @@ import {
     CancelFrozenMenuItemFactory,
     ColAutoWidthMenuItemFactory,
     CopyMenuItemFactory,
-    // CutMenuItemFactory,
-    FitContentMenuItemFactory,
     FontFamilySelectorMenuItemFactory,
     FontSizeSelectorMenuItemFactory,
     FormatPainterMenuItemFactory,
-    FrozenColMenuItemFactory,
     FrozenMenuItemFactory,
-    FrozenRowMenuItemFactory,
     HideColMenuItemFactory,
-    HideRowMenuItemFactory,
     HorizontalAlignMenuItemFactory,
     ItalicMenuItemFactory,
     PASTE_SPECIAL_MENU_ID,
@@ -138,13 +117,9 @@ import {
     ResetBackgroundColorMenuItemFactory,
     ResetTextColorMenuItemFactory,
     SetColWidthMenuItemFactory,
-    SetRowHeightMenuItemFactory,
     SHEET_FROZEN_HEADER_MENU_ID,
-    SHEET_FROZEN_MENU_ID,
     SheetFrozenHeaderMenuItemFactory,
-    SheetFrozenMenuItemFactory,
     ShowColMenuItemFactory,
-    ShowRowMenuItemFactory,
     StrikeThroughMenuItemFactory,
     TextColorSelectorMenuItemFactory,
     TextRotateMenuItemFactory,
@@ -196,8 +171,8 @@ export const menuSchema: MenuSchemaType = {
                 order: 2,
                 menuItemFactory: FontSizeSelectorMenuItemFactory,
             },
-        // TODO: fontsize +
-        // TODO: fontsize -
+            // TODO: fontsize +
+            // TODO: fontsize -
             [SetRangeBoldCommand.id]: {
                 order: 5,
                 menuItemFactory: BoldMenuItemFactory,
@@ -281,144 +256,17 @@ export const menuSchema: MenuSchemaType = {
         },
     },
     [ContextMenuPosition.MAIN_AREA]: {
-        [ContextMenuGroup.FORMAT]: {
-            [SheetCopyCommand.name]: {
-                order: 0,
-                menuItemFactory: CopyMenuItemFactory,
-            },
-            // [SheetCutCommand.name]: {
-            //     order: 1,
-            //     menuItemFactory: CutMenuItemFactory,
-            // },
-            [SheetPasteCommand.name]: {
-                order: 2,
-                menuItemFactory: PasteMenuItemFactory,
-            },
-            [PASTE_SPECIAL_MENU_ID]: {
-                order: 3,
-                menuItemFactory: PasteSpacialMenuItemFactory,
-                [SheetPasteValueCommand.id]: {
-                    order: 0,
-                    menuItemFactory: PasteValueMenuItemFactory,
-                },
-                [SheetPasteFormatCommand.id]: {
-                    order: 1,
-                    menuItemFactory: PasteFormatMenuItemFactory,
-                },
-                [SheetPasteColWidthCommand.id]: {
-                    order: 2,
-                    menuItemFactory: PasteColWidthMenuItemFactory,
-                },
-                [SheetPasteBesidesBorderCommand.id]: {
-                    order: 3,
-                    menuItemFactory: PasteBesidesBorderMenuItemFactory,
-                },
-            },
-            [CLEAR_SELECTION_MENU_ID]: {
-                order: 4,
-                menuItemFactory: ClearSelectionMenuItemFactory,
-                [ClearSelectionContentCommand.id]: {
-                    order: 0,
-                    menuItemFactory: ClearSelectionContentMenuItemFactory,
-                },
-                [ClearSelectionFormatCommand.id]: {
-                    order: 1,
-                    menuItemFactory: ClearSelectionFormatMenuItemFactory,
-                },
-                [ClearSelectionAllCommand.id]: {
-                    order: 2,
-                    menuItemFactory: ClearSelectionAllMenuItemFactory,
-                },
-            },
+        [SheetCopyCommand.name]: {
+            order: 0,
+            menuItemFactory: CopyMenuItemFactory,
         },
-        [ContextMenuGroup.LAYOUT]: {
-            order: 1,
-            [CELL_INSERT_MENU_ID]: {
-                order: 0,
-                menuItemFactory: CellInsertMenuItemFactory,
-                [InsertRowBeforeCommand.id]: {
-                    order: 0,
-                    menuItemFactory: InsertRowBeforeCellMenuItemFactory,
-                },
-                [InsertColBeforeCommand.id]: {
-                    order: 1,
-                    menuItemFactory: InsertColLeftCellMenuItemFactory,
-                },
-                [InsertRangeMoveRightConfirmCommand.id]: {
-                    order: 2,
-                    menuItemFactory: InsertRangeMoveRightMenuItemFactory,
-                },
-                [InsertRangeMoveDownConfirmCommand.id]: {
-                    order: 3,
-                    menuItemFactory: InsertRangeMoveDownMenuItemFactory,
-                },
-            },
-            [DELETE_RANGE_MENU_ID]: {
-                order: 0,
-                menuItemFactory: DeleteRangeMenuItemFactory,
-                [RemoveColConfirmCommand.id]: {
-                    order: 0,
-                    menuItemFactory: RemoveColMenuItemFactory,
-                },
-                [RemoveRowConfirmCommand.id]: {
-                    order: 1,
-                    menuItemFactory: RemoveRowMenuItemFactory,
-                },
-                [DeleteRangeMoveLeftConfirmCommand.id]: {
-                    order: 2,
-                    menuItemFactory: DeleteRangeMoveLeftMenuItemFactory,
-                },
-                [DeleteRangeMoveUpConfirmCommand.id]: {
-                    order: 3,
-                    menuItemFactory: DeleteRangeMoveUpMenuItemFactory,
-                },
-            },
-            [SHEET_FROZEN_MENU_ID]: {
-                order: 2,
-                menuItemFactory: SheetFrozenMenuItemFactory,
-                [SetSelectionFrozenCommand.id]: {
-                    order: 0,
-                    menuItemFactory: FrozenMenuItemFactory,
-                },
-                [SetRowFrozenCommand.id]: {
-                    order: 1,
-                    menuItemFactory: FrozenRowMenuItemFactory,
-                },
-                [SetColumnFrozenCommand.id]: {
-                    order: 2,
-                    menuItemFactory: FrozenColMenuItemFactory,
-                },
-                [CancelFrozenCommand.id]: {
-                    order: 3,
-                    menuItemFactory: CancelFrozenMenuItemFactory,
-                },
-            },
-            [SHEET_PERMISSION_CONTEXT_MENU_ID]: {
-                order: 3,
-                menuItemFactory: sheetPermissionContextMenuFactory,
-                [AddRangeProtectionFromContextMenuCommand.id]: {
-                    order: 0,
-                    menuItemFactory: sheetPermissionAddProtectContextMenuFactory,
-                },
-                [SetRangeProtectionFromContextMenuCommand.id]: {
-                    order: 1,
-                    menuItemFactory: sheetPermissionEditProtectContextMenuFactory,
-                },
-                [DeleteRangeProtectionFromContextMenuCommand.id]: {
-                    order: 2,
-                    menuItemFactory: sheetPermissionRemoveProtectContextMenuFactory,
-                },
-                [ViewSheetPermissionFromContextMenuCommand.id]: {
-                    order: 3,
-                    menuItemFactory: sheetPermissionViewAllProtectRuleContextMenuFactory,
-                },
-            },
-        },
-        [ContextMenuGroup.DATA]: {
-            order: 2,
-        },
-        [ContextMenuGroup.OTHERS]: {
-            order: 3,
+        // [SheetCutCommand.name]: {
+        //     order: 1,
+        //     menuItemFactory: CutMenuItemFactory,
+        // },
+        [SheetPasteValueCommand.id]: {
+            order: 0,
+            menuItemFactory: PasteValueMenuItemFactory,
         },
     },
     [ContextMenuPosition.COL_HEADER]: {
@@ -543,124 +391,25 @@ export const menuSchema: MenuSchemaType = {
         },
     },
     [ContextMenuPosition.ROW_HEADER]: {
-        [ContextMenuGroup.FORMAT]: {
-            [SheetCopyCommand.name]: {
-                order: 0,
-                menuItemFactory: CopyMenuItemFactory,
-            },
-            // [SheetCutCommand.name]: {
-            //     order: 1,
-            //     menuItemFactory: CutMenuItemFactory,
-            // },
-            [SheetPasteCommand.name]: {
-                order: 2,
-                menuItemFactory: PasteMenuItemFactory,
-            },
-            [PASTE_SPECIAL_MENU_ID]: {
-                order: 3,
-                menuItemFactory: PasteSpacialMenuItemFactory,
-                [SheetPasteValueCommand.id]: {
-                    order: 0,
-                    menuItemFactory: PasteValueMenuItemFactory,
-                },
-                [SheetPasteFormatCommand.id]: {
-                    order: 1,
-                    menuItemFactory: PasteFormatMenuItemFactory,
-                },
-                [SheetPasteColWidthCommand.id]: {
-                    order: 2,
-                    menuItemFactory: PasteColWidthMenuItemFactory,
-                },
-                [SheetPasteBesidesBorderCommand.id]: {
-                    order: 3,
-                    menuItemFactory: PasteBesidesBorderMenuItemFactory,
-                },
-            },
-            [CLEAR_SELECTION_MENU_ID]: {
-                order: 4,
-                menuItemFactory: ClearSelectionMenuItemFactory,
-                [ClearSelectionContentCommand.id]: {
-                    order: 0,
-                    menuItemFactory: ClearSelectionContentMenuItemFactory,
-                },
-                [ClearSelectionFormatCommand.id]: {
-                    order: 1,
-                    menuItemFactory: ClearSelectionFormatMenuItemFactory,
-                },
-                [ClearSelectionAllCommand.id]: {
-                    order: 2,
-                    menuItemFactory: ClearSelectionAllMenuItemFactory,
-                },
-            },
+        [SheetCopyCommand.name]: {
+            order: 0,
+            menuItemFactory: CopyMenuItemFactory,
         },
-        [ContextMenuGroup.LAYOUT]: {
+        [SheetPasteValueCommand.id]: {
+            order: 0,
+            menuItemFactory: PasteValueMenuItemFactory,
+        },
+        [InsertMultiRowsAboveCommand.id]: {
+            order: 0,
+            menuItemFactory: InsertMultiRowsAboveHeaderMenuItemFactory,
+        },
+        [InsertMultiRowsAfterCommand.id]: {
             order: 1,
-            [InsertMultiRowsAboveCommand.id]: {
-                order: 0,
-                menuItemFactory: InsertMultiRowsAboveHeaderMenuItemFactory,
-            },
-            [InsertMultiRowsAfterCommand.id]: {
-                order: 1,
-                menuItemFactory: InsertMultiRowsAfterHeaderMenuItemFactory,
-            },
-            [RemoveRowConfirmCommand.id]: {
-                order: 1,
-                menuItemFactory: RemoveRowMenuItemFactory,
-            },
-            [HideRowConfirmCommand.id]: {
-                order: 2,
-                menuItemFactory: HideRowMenuItemFactory,
-            },
-            [SetSelectedRowsVisibleCommand.id]: {
-                order: 2,
-                menuItemFactory: ShowRowMenuItemFactory,
-            },
-            [SetRowHeightCommand.id]: {
-                order: 3,
-                menuItemFactory: SetRowHeightMenuItemFactory,
-            },
-            [SetWorksheetRowIsAutoHeightCommand.id]: {
-                order: 4,
-                menuItemFactory: FitContentMenuItemFactory,
-            },
-            [SHEET_FROZEN_HEADER_MENU_ID]: {
-                order: 5,
-                menuItemFactory: SheetFrozenHeaderMenuItemFactory,
-                [SetSelectionFrozenCommand.id]: {
-                    order: 0,
-                    menuItemFactory: FrozenMenuItemFactory,
-                },
-                [CancelFrozenCommand.id]: {
-                    order: 3,
-                    menuItemFactory: CancelFrozenMenuItemFactory,
-                },
-            },
-            [SHEET_PERMISSION_CONTEXT_MENU_ID]: {
-                order: 6,
-                menuItemFactory: sheetPermissionContextMenuFactory,
-                [AddRangeProtectionFromContextMenuCommand.id]: {
-                    order: 0,
-                    menuItemFactory: sheetPermissionAddProtectContextMenuFactory,
-                },
-                [SetRangeProtectionFromContextMenuCommand.id]: {
-                    order: 1,
-                    menuItemFactory: sheetPermissionEditProtectContextMenuFactory,
-                },
-                [DeleteRangeProtectionFromContextMenuCommand.id]: {
-                    order: 2,
-                    menuItemFactory: sheetPermissionRemoveProtectContextMenuFactory,
-                },
-                [ViewSheetPermissionFromContextMenuCommand.id]: {
-                    order: 3,
-                    menuItemFactory: sheetPermissionViewAllProtectRuleContextMenuFactory,
-                },
-            },
+            menuItemFactory: InsertMultiRowsAfterHeaderMenuItemFactory,
         },
-        [ContextMenuGroup.DATA]: {
-            order: 2,
-        },
-        [ContextMenuGroup.OTHERS]: {
-            order: 3,
+        [RemoveRowConfirmCommand.id]: {
+            order: 1,
+            menuItemFactory: RemoveRowMenuItemFactory,
         },
     },
     [ContextMenuPosition.FOOTER_TABS]: {
