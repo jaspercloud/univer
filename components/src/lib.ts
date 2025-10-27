@@ -115,7 +115,9 @@ const createInstance = (container: string) => {
 
     function snapshot() {
         const workbook = univerAPI.getActiveWorkbook();
+        workbook.getActiveSheet().activate();
         const sheetSnapshot = workbook.getSnapshot();
+        sheetSnapshot.resources = [];
         return sheetSnapshot;
     }
     return {
