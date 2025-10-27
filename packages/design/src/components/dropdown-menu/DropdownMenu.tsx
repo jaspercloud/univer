@@ -28,7 +28,6 @@ import {
     DropdownMenuSub,
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
-    DropdownMenuTrigger,
 } from './DropdownMenuPrimitive';
 
 interface IDropdownMenuNormalItem {
@@ -195,9 +194,9 @@ export function DropdownMenu(props: IDropdownMenuProps) {
 
     return (
         <DropdownMenuPrimitive modal={false} open={open} onOpenChange={handleChangeOpen}>
-            <DropdownMenuTrigger asChild>
+            {/* <DropdownMenuTrigger asChild>
                 {children}
-            </DropdownMenuTrigger>
+            </DropdownMenuTrigger> */}
             <DropdownMenuContent
                 className="univer-text-sm"
                 collisionPadding={{ top: 12, bottom: 12 }}

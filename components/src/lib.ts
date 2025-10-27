@@ -73,7 +73,7 @@ const createInstance = (container: string) => {
     univer.registerPlugin(UniverSheetsFormulaUIPlugin);
     univer.registerPlugin(UniverSheetsNumfmtUIPlugin);
 
-    const workbook = {
+    const uni = {
         unitId: null,
     };
     const WORKBOOK_DATA = {
@@ -82,18 +82,45 @@ const createInstance = (container: string) => {
         locale: LocaleType.ZH_CN,
         sheets: [],
     };
-    workbook.unitId = univer.createUnit(UniverInstanceType.UNIVER_SHEET, WORKBOOK_DATA).getUnitId();
+    uni.unitId = univer.createUnit(UniverInstanceType.UNIVER_SHEET, WORKBOOK_DATA).getUnitId();
     const univerAPI = FUniver.newAPI(univer);
 
     function update(data: any) {
-        if (workbook.unitId) {
-            univerAPI.disposeUnit(workbook.unitId);
+        if (uni.unitId) {
+            univerAPI.disposeUnit(uni.unitId);
         }
-        workbook.unitId = univer.createUnit(UniverInstanceType.UNIVER_SHEET, data).getUnitId();
+        uni.unitId = univer.createUnit(UniverInstanceType.UNIVER_SHEET, data).getUnitId();
+        const workbook = univerAPI.getActiveWorkbook();
+        const permission = workbook.getPermission();
+        permission.setPermissionDialogVisible(false);
+        const rangeProtectionPermissionEditPoint = permission.permissionPointsDefinition.RangeProtectionPermissionEditPoint;
+        for (const sheetId in Object.keys(data.protectionRanges)) {
+            const sheet = workbook.getSheetBySheetId(sheetId);
+            const protections = data.protectionRanges[sheetId];
+            protections.forEach(async (protection) => {
+                try {
+                    if (protection.locked) {
+                        const { permissionId, ruleId } = await permission.addRangeBaseProtection(workbook.getId(), sheet.getSheetId(), [sheet.getRange(protection.range)]);
+                        permission.rangeRuleChangedAfterAuth$.subscribe((currentPermissionId) => {
+                            if (currentPermissionId === permissionId) {
+                                permission.setRangeProtectionPermissionPoint(workbook.getId(), sheet.getSheetId(), permissionId, rangeProtectionPermissionEditPoint, false);
+                            }
+                        });
+                    }
+                } catch {
+                }
+            });
+        }
     }
 
+    function snapshot() {
+        const workbook = univerAPI.getActiveWorkbook();
+        const sheetSnapshot = workbook.getSnapshot();
+        return sheetSnapshot;
+    }
     return {
         update,
+        snapshot,
     };
 };
 
