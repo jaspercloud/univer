@@ -164,7 +164,7 @@ function SelectList(props: ISelectListProps) {
                     );
                 })}
             </div>
-            {(showEditOnDropdown && hasPermission) && (
+            {/* {(showEditOnDropdown && hasPermission) && (
                 <div className={clsx('univer-box-border univer-px-2 univer-pt-1', borderTopClassName)}>
                     <a
                         className={`
@@ -177,7 +177,7 @@ function SelectList(props: ISelectListProps) {
                         {localeService.t('dataValidation.list.edit')}
                     </a>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

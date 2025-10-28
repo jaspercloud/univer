@@ -23,6 +23,9 @@ import DocsUIZhCN from '@univerjs/docs-ui/locale/zh-CN';
 import { UniverFormulaEnginePlugin } from '@univerjs/engine-formula';
 import { UniverRenderEnginePlugin } from '@univerjs/engine-render';
 import { UniverSheetsPlugin } from '@univerjs/sheets';
+import { UniverSheetsDataValidationPlugin } from '@univerjs/sheets-data-validation';
+import { UniverSheetsDataValidationUIPlugin } from '@univerjs/sheets-data-validation-ui';
+import SheetsDataValidationUIZhCN from '@univerjs/sheets-data-validation-ui/locale/zh-CN';
 import { UniverSheetsFormulaUIPlugin } from '@univerjs/sheets-formula-ui';
 import SheetsFormulaUIZhCN from '@univerjs/sheets-formula-ui/locale/zh-CN';
 import { UniverSheetsNumfmtUIPlugin } from '@univerjs/sheets-numfmt-ui';
@@ -33,14 +36,16 @@ import SheetsZhCN from '@univerjs/sheets/locale/zh-CN';
 import { UniverUIPlugin } from '@univerjs/ui';
 import UIZhCN from '@univerjs/ui/locale/zh-CN';
 
-import '@univerjs/sheets/facade';
-import '@univerjs/ui/facade';
 import '@univerjs/docs-ui/facade';
-import '@univerjs/sheets-ui/facade';
 import '@univerjs/engine-formula/facade';
+import '@univerjs/sheets-data-validation/facade';
+import '@univerjs/sheets-formula-ui/facade';
 import '@univerjs/sheets-formula/facade';
 import '@univerjs/sheets-numfmt/facade';
-import '@univerjs/sheets-drawing-ui/facade';
+import '@univerjs/sheets-table/facade';
+import '@univerjs/sheets-ui/facade';
+import '@univerjs/sheets/facade';
+import '@univerjs/ui/facade';
 
 import './global.css';
 
@@ -55,7 +60,8 @@ const createInstance = (container: string) => {
                 SheetsZhCN,
                 SheetsUIZhCN,
                 SheetsFormulaUIZhCN,
-                SheetsNumfmtUIZhCN
+                SheetsNumfmtUIZhCN,
+                SheetsDataValidationUIZhCN
             ),
         },
     });
@@ -64,7 +70,6 @@ const createInstance = (container: string) => {
     univer.registerPlugin(UniverUIPlugin, {
         container,
         header: false,
-        // footer: false,
     });
     univer.registerPlugin(UniverDocsPlugin);
     univer.registerPlugin(UniverDocsUIPlugin);
@@ -72,6 +77,8 @@ const createInstance = (container: string) => {
     univer.registerPlugin(UniverSheetsUIPlugin);
     univer.registerPlugin(UniverSheetsFormulaUIPlugin);
     univer.registerPlugin(UniverSheetsNumfmtUIPlugin);
+    univer.registerPlugin(UniverSheetsDataValidationPlugin);
+    univer.registerPlugin(UniverSheetsDataValidationUIPlugin);
 
     const uni = {
         unitId: null,
@@ -89,27 +96,42 @@ const createInstance = (container: string) => {
         if (uni.unitId) {
             univerAPI.disposeUnit(uni.unitId);
         }
+        if (data.components) {
+            const components = {};
+            for (const sheetId in Object.keys(data.components)) {
+                const sheetComponents = data.components[sheetId];
+                components[sheetId] = sheetComponents;
+            }
+            data.resources = [
+                {
+                    name: 'SHEET_DATA_VALIDATION_PLUGIN',
+                    data: JSON.stringify(components),
+                },
+            ];
+        }
         uni.unitId = univer.createUnit(UniverInstanceType.UNIVER_SHEET, data).getUnitId();
         const workbook = univerAPI.getActiveWorkbook();
         const permission = workbook.getPermission();
         permission.setPermissionDialogVisible(false);
         const rangeProtectionPermissionEditPoint = permission.permissionPointsDefinition.RangeProtectionPermissionEditPoint;
-        for (const sheetId in Object.keys(data.protectionRanges)) {
-            const sheet = workbook.getSheetBySheetId(sheetId);
-            const protections = data.protectionRanges[sheetId];
-            protections.forEach(async (protection) => {
-                try {
-                    if (protection.locked) {
-                        const { permissionId, ruleId } = await permission.addRangeBaseProtection(workbook.getId(), sheet.getSheetId(), [sheet.getRange(protection.range)]);
-                        permission.rangeRuleChangedAfterAuth$.subscribe((currentPermissionId) => {
-                            if (currentPermissionId === permissionId) {
-                                permission.setRangeProtectionPermissionPoint(workbook.getId(), sheet.getSheetId(), permissionId, rangeProtectionPermissionEditPoint, false);
-                            }
-                        });
+        if (data.protectionRanges) {
+            for (const sheetId in Object.keys(data.protectionRanges)) {
+                const sheet = workbook.getSheetBySheetId(sheetId);
+                const protections = data.protectionRanges[sheetId];
+                protections.forEach(async (protection) => {
+                    try {
+                        if (protection.locked) {
+                            const { permissionId, ruleId } = await permission.addRangeBaseProtection(workbook.getId(), sheet.getSheetId(), [sheet.getRange(protection.range)]);
+                            permission.rangeRuleChangedAfterAuth$.subscribe((currentPermissionId) => {
+                                if (currentPermissionId === permissionId) {
+                                    permission.setRangeProtectionPermissionPoint(workbook.getId(), sheet.getSheetId(), permissionId, rangeProtectionPermissionEditPoint, false);
+                                }
+                            });
+                        }
+                    } catch {
                     }
-                } catch {
-                }
-            });
+                });
+            }
         }
     }
 
