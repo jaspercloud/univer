@@ -522,7 +522,7 @@ export class SlideTabBar {
             // double click
             if (diffTime && diffPageX && diffPageY) {
                 // user editor
-                this._activeTabItem.setEditor();
+                // this._activeTabItem.setEditor();
             }
 
             lastPageX = pageX;
