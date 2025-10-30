@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import type { IWorkbookData } from '@univerjs/core';
 import { LocaleType, mergeLocales, Univer, UniverInstanceType } from '@univerjs/core';
 import { FUniver } from '@univerjs/core/facade';
 import DesignZhCN from '@univerjs/design/locale/zh-CN';
@@ -26,8 +27,10 @@ import { UniverSheetsPlugin } from '@univerjs/sheets';
 import { UniverSheetsDataValidationPlugin } from '@univerjs/sheets-data-validation';
 import { UniverSheetsDataValidationUIPlugin } from '@univerjs/sheets-data-validation-ui';
 import SheetsDataValidationUIZhCN from '@univerjs/sheets-data-validation-ui/locale/zh-CN';
+import { UniverSheetsFormulaPlugin } from '@univerjs/sheets-formula';
 import { UniverSheetsFormulaUIPlugin } from '@univerjs/sheets-formula-ui';
 import SheetsFormulaUIZhCN from '@univerjs/sheets-formula-ui/locale/zh-CN';
+import { UniverSheetsNumfmtPlugin } from '@univerjs/sheets-numfmt';
 import { UniverSheetsNumfmtUIPlugin } from '@univerjs/sheets-numfmt-ui';
 import SheetsNumfmtUIZhCN from '@univerjs/sheets-numfmt-ui/locale/zh-CN';
 import { UniverSheetsUIPlugin } from '@univerjs/sheets-ui';
@@ -74,8 +77,14 @@ const createInstance = (container: string) => {
     univer.registerPlugin(UniverDocsPlugin);
     univer.registerPlugin(UniverDocsUIPlugin);
     univer.registerPlugin(UniverSheetsPlugin);
-    univer.registerPlugin(UniverSheetsUIPlugin);
+    univer.registerPlugin(UniverSheetsUIPlugin, {
+        disableForceStringAlert: true,
+    });
+    univer.registerPlugin(UniverSheetsFormulaPlugin);
     univer.registerPlugin(UniverSheetsFormulaUIPlugin);
+    univer.registerPlugin(UniverSheetsNumfmtPlugin, {
+        disableTextFormatAlert: true,
+    });
     univer.registerPlugin(UniverSheetsNumfmtUIPlugin);
     univer.registerPlugin(UniverSheetsDataValidationPlugin);
     univer.registerPlugin(UniverSheetsDataValidationUIPlugin);
@@ -83,12 +92,7 @@ const createInstance = (container: string) => {
     const uni = {
         unitId: null,
     };
-    const WORKBOOK_DATA = {
-        id: 'workbook',
-        name: 'UniverSheet',
-        locale: LocaleType.ZH_CN,
-        sheets: [],
-    };
+    const WORKBOOK_DATA: Partial<IWorkbookData> = {};
     uni.unitId = univer.createUnit(UniverInstanceType.UNIVER_SHEET, WORKBOOK_DATA).getUnitId();
     const univerAPI = FUniver.newAPI(univer);
 
