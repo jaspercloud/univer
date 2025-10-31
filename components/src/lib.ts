@@ -52,7 +52,7 @@ import '@univerjs/ui/facade';
 
 import './global.css';
 
-const createInstance = (container: string) => {
+const createInstance = (container: string, header?: boolean = false) => {
     const univer = new Univer({
         locale: LocaleType.ZH_CN,
         locales: {
@@ -72,7 +72,7 @@ const createInstance = (container: string) => {
     univer.registerPlugin(UniverFormulaEnginePlugin);
     univer.registerPlugin(UniverUIPlugin, {
         container,
-        header: false,
+        header,
     });
     univer.registerPlugin(UniverDocsPlugin);
     univer.registerPlugin(UniverDocsUIPlugin);
